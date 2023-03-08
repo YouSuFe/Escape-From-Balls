@@ -10,9 +10,6 @@ public class UIHandler : MonoBehaviour
 {
     public TextMeshProUGUI bestScoreText;
     public TMP_InputField nameField;
-    //public Button playButton;
-    //public Button resetButton;
-    //public Button quitButton;
     public int score;
     public string playerName;
     public string currentPlayer;
