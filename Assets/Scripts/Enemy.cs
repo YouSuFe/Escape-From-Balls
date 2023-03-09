@@ -6,12 +6,14 @@ public class Enemy : MonoBehaviour
 {
     public float speed;
     private Rigidbody enemyRb;
-    private GameObject player;
+    private PlayerController player;
+    private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
         enemyRb = GetComponent<Rigidbody>();
-        player = GameObject.Find("Player");
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -24,9 +26,9 @@ public class Enemy : MonoBehaviour
 
     void DestroyEnemy()
     {
-        if(transform.position.y < -5)
+        if(transform.position.y < -5 || player.isGameOver == true)
         {
             Destroy(gameObject);
-        }
+        }       
     }
 }

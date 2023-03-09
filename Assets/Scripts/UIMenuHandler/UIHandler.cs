@@ -18,16 +18,7 @@ public class UIHandler : MonoBehaviour
     void Start()
     {
         SaveManager.Instance.LoadData();
-        if(SaveManager.Instance.playerName != null)
-        {
-            playerName = SaveManager.Instance.playerName;
-            score = SaveManager.Instance.bestScore;
-            bestScoreText.text = "Best Score : " + playerName + " : " + score;
-        }
-        else
-        {
-            bestScoreText.text = "GOOD LUCK FOR FIRST GAME";
-        }  
+        UpdateMenuText();
     }
 
     // Update is called once per frame
@@ -41,6 +32,20 @@ public class UIHandler : MonoBehaviour
         currentPlayer = nameField.text;
     }
 
+    void UpdateMenuText()
+    {
+        if (SaveManager.Instance.bestScore != 0)
+        {
+            playerName = SaveManager.Instance.playerName;
+            score = SaveManager.Instance.bestScore;
+            bestScoreText.text = "Best Score : " + playerName + " : " + score;
+        }
+        else
+        {
+            bestScoreText.text = "GOOD LUCK FOR THE FIRST GAME";
+        }
+    }
+
     public void StartGame()
     {
         SaveManager.Instance.playerName = playerName;
@@ -50,7 +55,7 @@ public class UIHandler : MonoBehaviour
 
     public void ResetScore()
     {
-        if(SaveManager.Instance.playerName != null)
+        if(SaveManager.Instance.bestScore != 0)
         {
             SaveManager.Instance.ResetData();
             SaveManager.Instance.LoadData();
