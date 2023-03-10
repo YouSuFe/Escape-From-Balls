@@ -6,20 +6,26 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject enemyPrefab;
+    public List<GameObject> enemyPrefab;
     public GameObject powerUpPrefab;
     public GameObject pauseMenu;
     public GameObject gameOverMenu;
     public TextMeshProUGUI bestScoreTextPanel;
     public TextMeshProUGUI bestScoreText;
+    public TextMeshProUGUI numberOfStopChange;
+    public TextMeshProUGUI numberOfBoostChange;
+    public TextMeshProUGUI currentWaveNumber;
     private PlayerController playerCont;
 
     public string playerName;
     public int highScore;
     
     private float spawnRange = -9;
-    public int waveNumber = 1;
+    private int waveNumber = 1;
+    private int numberOfFastEnemy = 1;
+    private int numberOfGiantEnemy = 2;
     private bool isMenuClicked;
+    private bool isEnemyDown;
     [SerializeField] private int enemyCount;
     [SerializeField] private bool isMenuActive;
     // Start is called before the first frame update
@@ -30,15 +36,15 @@ public class GameManager : MonoBehaviour
         EnemySpawnWave(waveNumber);
         Instantiate(powerUpPrefab, GenerateRandomPosition(), powerUpPrefab.transform.rotation);
         UpdatePlayer();
-
+        UpdateWave();
+        UpdateStop();
+        UpdateBoost();
     }
 
     // Update is called once per frame
     void Update()
     {
-        IfGameOnGoing();
-        IfPauseMenuCalled();
-        UpdateBestScoreText();
+        WaveCompleted();
     }
 
     private Vector3 GenerateRandomPosition()
@@ -51,10 +57,39 @@ public class GameManager : MonoBehaviour
 
     private void EnemySpawnWave(int number)
     {
-        for(int i = 0; i < number; i++)
+        // Generate Normal Enemies and Fast Enemies
+        if(number % 3 == 0  &&  number % 10 != 0)
         {
-            Instantiate(enemyPrefab, GenerateRandomPosition(), enemyPrefab.transform.rotation);
+            for(int i = 0; i < number - numberOfFastEnemy; i++)
+            {
+                Instantiate(enemyPrefab[0], GenerateRandomPosition(), enemyPrefab[0].transform.rotation);
+            }
+
+            for (int i = 0; i < numberOfFastEnemy; i++)
+            {
+                Instantiate(enemyPrefab[1], GenerateRandomPosition(), enemyPrefab[1].transform.rotation);
+            }
+            numberOfFastEnemy++;
         }
+        else if(number % 10 != 0)
+        {
+            for (int i = 0; i < number; i++)
+            {
+                Instantiate(enemyPrefab[0], GenerateRandomPosition(), enemyPrefab[0].transform.rotation);
+            }
+        }
+
+        // Generate Giant Enemies with fast enemy
+        else if(number % 10 == 0)
+        {
+            for (int i = 0; i < numberOfGiantEnemy ; i++)
+            {
+                Instantiate(enemyPrefab[2], GenerateRandomPosition(), enemyPrefab[2].transform.rotation);
+                Instantiate(enemyPrefab[1], GenerateRandomPosition(), enemyPrefab[1].transform.rotation);
+            }
+            numberOfGiantEnemy++;
+        }
+        
     }
 
     // Check if pause menu called
@@ -121,6 +156,7 @@ public class GameManager : MonoBehaviour
             waveNumber++;
             Instantiate(powerUpPrefab, GenerateRandomPosition(), powerUpPrefab.transform.rotation);
             EnemySpawnWave(waveNumber);
+            UpdateChange();
         }
     }
 
@@ -153,5 +189,39 @@ public class GameManager : MonoBehaviour
         }
         CheckIfBestScore();
         SceneManager.LoadScene(0);
+    }
+
+    public void UpdateStop()
+    {
+        int numbStop = playerCont.numberOfStopChange;
+        numberOfStopChange.text = "#STOP : " + numbStop;
+    }
+
+    public void UpdateBoost()
+    {
+        numberOfBoostChange.text = "#BOOST : " + playerCont.numberOfBoostChange;
+    }
+
+    public void UpdateWave()
+    {
+        currentWaveNumber.text = "Wave Number : " + waveNumber;
+    }
+
+    void UpdateChange()
+    {
+        playerCont.numberOfBoostChange = 5;
+        playerCont.numberOfStopChange = 5;
+        playerCont.isBoostChangeFinished = false;
+        playerCont.isStopChangeFinished = false;
+    }
+
+    void WaveCompleted()
+    {
+        IfGameOnGoing();
+        IfPauseMenuCalled();
+        UpdateBestScoreText();
+        UpdateStop();
+        UpdateBoost();
+        UpdateWave();
     }
 }

@@ -7,6 +7,7 @@ TagManager:
   - Enemy Normal
   - Enemy Fast
   - PowerUp
+  - Enemy Giant
   layers:
   - Default
   - TransparentFX

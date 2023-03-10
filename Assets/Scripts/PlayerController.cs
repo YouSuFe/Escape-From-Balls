@@ -11,8 +11,17 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private float speed = 5;
     [SerializeField] private bool hasPowerUp;
-    private float powerUpStrength = 15.0f;
+    [SerializeField] private float powerUpStrength = 700.0f;
+    public int numberOfStopChange = 5;
+    public int numberOfBoostChange = 5;
+    public bool isStopChangeFinished;
+    public bool isBoostChangeFinished;
     public bool isGameOver;
+    public bool powerUpControl
+    {
+        get { return hasPowerUp; }
+    }
+    
     
     private Coroutine powerUpCoroutine;
 
@@ -31,6 +40,8 @@ public class PlayerController : MonoBehaviour
         playerRb.AddForce(focalPoint.transform.forward * verticalInput * speed);
         powerUpIndicator.transform.position = transform.position + new Vector3(0,-0.5f,0);
         DestroyIfOutOfBounds();
+        StopPlayer();
+        BoostPlayer();
     }
 
     IEnumerator PowerUpCountDownRoutine()
@@ -60,7 +71,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Enemy Normal") && hasPowerUp)
+        if((collision.gameObject.CompareTag("Enemy Normal") || 
+            collision.gameObject.CompareTag("Enemy Fast") ||
+            collision.gameObject.CompareTag("Enemy Giant")) && hasPowerUp)
         {
             Rigidbody enemyRb = collision.gameObject.GetComponent<Rigidbody>();
             Vector3 awayFromPlayer = (collision.gameObject.transform.position - transform.position);
@@ -75,6 +88,35 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(gameObject);
             gameManager.GameOver();
+        }
+    }
+
+    void StopPlayer()
+    {
+        if(Input.GetKeyDown(KeyCode.Space) && isStopChangeFinished == false)
+        {
+            playerRb.velocity = Vector3.zero;
+            playerRb.angularVelocity = Vector3.zero;
+            numberOfStopChange -= 1;
+            gameManager.UpdateStop();
+            if(numberOfStopChange == 0)
+            {
+                isStopChangeFinished = true;
+            }
+        }
+    }
+    
+    void BoostPlayer()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isBoostChangeFinished == false)
+        {
+            playerRb.AddForce(focalPoint.transform.forward * 100, ForceMode.Impulse);
+            numberOfBoostChange -= 1;
+
+            if(numberOfBoostChange == 0)
+            {
+                isBoostChangeFinished = true;
+            }
         }
     }
 }

@@ -6,21 +6,24 @@ public class Enemy : MonoBehaviour
 {
     public float speed;
     private Rigidbody enemyRb;
-    private PlayerController player;
-    private GameManager gameManager;
+    protected PlayerController player;
     // Start is called before the first frame update
     void Start()
     {
         enemyRb = GetComponent<Rigidbody>();
         player = GameObject.Find("Player").GetComponent<PlayerController>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 lookDirection = (player.transform.position - transform.position).normalized;
-        enemyRb.AddForce(lookDirection * speed);
+
+        if(player.isGameOver != true)
+        {
+            Vector3 lookDirection = (player.transform.position - transform.position).normalized;
+            enemyRb.AddForce(lookDirection * speed);
+        }
+        StartCoroutine(DestroyGiantEnemy());
         DestroyEnemy();
     }
 
@@ -30,5 +33,14 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject);
         }       
+    }
+
+    IEnumerator DestroyGiantEnemy()
+    {
+        if(gameObject.CompareTag("Enemy Giant"))
+        {
+            yield return new WaitForSeconds(10);
+            Destroy(gameObject);
+        }     
     }
 }
