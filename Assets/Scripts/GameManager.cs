@@ -15,12 +15,11 @@ public class GameManager : MonoBehaviour
     private PlayerController playerCont;
 
     public string playerName;
-    public string currentPlayer;
-    public int bestScore = 0;
+    public int highScore;
     
     private float spawnRange = -9;
-    private int waveNumber = 1;
-    private int score;
+    public int waveNumber = 1;
+    private bool isMenuClicked;
     [SerializeField] private int enemyCount;
     [SerializeField] private bool isMenuActive;
     // Start is called before the first frame update
@@ -37,17 +36,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        enemyCount = GameManager.FindObjectsOfType<Enemy>().Length;
-        if (enemyCount == 0 && !playerCont.isGameOver)
-        {
-            waveNumber++;
-            Instantiate(powerUpPrefab, GenerateRandomPosition(), powerUpPrefab.transform.rotation);
-            EnemySpawnWave(waveNumber);
-        }
-
+        IfGameOnGoing();
         IfPauseMenuCalled();
         UpdateBestScoreText();
-        score = waveNumber;
     }
 
     private Vector3 GenerateRandomPosition()
@@ -65,40 +56,43 @@ public class GameManager : MonoBehaviour
             Instantiate(enemyPrefab, GenerateRandomPosition(), enemyPrefab.transform.rotation);
         }
     }
+
     // Check if pause menu called
     // If it is called then stop the game and show the panel
     // Else go back playing
     private void IfPauseMenuCalled()
     {
-        if(Input.GetKeyDown(KeyCode.Escape) && isMenuActive == false && playerCont.isGameOver == false)
+        if (Input.GetKeyDown(KeyCode.Escape) && isMenuActive == false && playerCont.isGameOver == false)
         {
             isMenuActive = true;
             pauseMenu.SetActive(true);
             bestScoreText.gameObject.SetActive(false);
             Time.timeScale = 0;
         }
-        else if(Input.GetKeyDown(KeyCode.Escape) && isMenuActive == true)
+        else if ((Input.GetKeyDown(KeyCode.Escape) && isMenuActive == true) || isMenuClicked == true)
         {
             isMenuActive = false;
+            isMenuClicked = false;
             pauseMenu.SetActive(false);
             bestScoreText.gameObject.SetActive(true);
             Time.timeScale = 1;
         }
     }
+
     // Get player information
     void UpdatePlayer()
     {
         playerName = SaveManager.Instance.playerName;
-        bestScore = SaveManager.Instance.bestScore;
-        Debug.Log("Update Player is Called");
+        highScore = SaveManager.Instance.bestScore;
     }
+
     // Update panel and game scene text
     void UpdateBestScoreText()
     {
-        if(bestScore != 0)
+        if(highScore != 0)
         {
-            bestScoreText.text = "Best Score : " + playerName + " : " + bestScore;
-            bestScoreTextPanel.text = "Best Score : " + playerName + " : " + bestScore;
+            bestScoreText.text = "Best Score : " + playerName + " : " + highScore;
+            bestScoreTextPanel.text = "Best Score : " + playerName + " : " + highScore;
         }
         else
         {
@@ -106,37 +100,57 @@ public class GameManager : MonoBehaviour
             bestScoreTextPanel.text = "Good Luck with the First Game!";
         }
     }
+
     //Chekcs if best score is passed
     private void CheckIfBestScore()
     {
-        if(score > bestScore)
+        if(waveNumber > highScore)
         {
-            Debug.Log("CheckIfBestScore Inside LOG");
-            bestScore = waveNumber;
+            highScore = waveNumber;
             SaveManager.Instance.SaveData(waveNumber);
             SaveManager.Instance.LoadData();
         }
-        Debug.Log("CheckIfBestScore Outside LOG");
     }
+
+    //Generate enemies while game is ongoing
+    private void IfGameOnGoing()
+    {
+        enemyCount = GameManager.FindObjectsOfType<Enemy>().Length;
+        if (enemyCount == 0 && !playerCont.isGameOver)
+        {
+            waveNumber++;
+            Instantiate(powerUpPrefab, GenerateRandomPosition(), powerUpPrefab.transform.rotation);
+            EnemySpawnWave(waveNumber);
+        }
+    }
+
     // Set gameover to true and check if it is high score
     public void GameOver()
     {
-        Debug.Log("GameOver");
         playerCont.isGameOver = true;
         bestScoreText.gameObject.SetActive(false);
         gameOverMenu.SetActive(true);
         CheckIfBestScore();
     }
+
     // Check if it is high score and restart the game
     public void RestartGame()
     {
-        Debug.Log("Restart Game Clicked");
+        if(isMenuActive == true)
+        {
+            isMenuClicked = true;
+        }
         CheckIfBestScore();
         SceneManager.LoadScene(1);
     }
+
     // Check if it is high score and go back to main menu
     public void MainMenuButton()
     {
+        if (isMenuActive == true)
+        {
+            isMenuClicked = true;
+        }
         CheckIfBestScore();
         SceneManager.LoadScene(0);
     }

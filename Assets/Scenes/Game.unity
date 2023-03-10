@@ -640,8 +640,8 @@ MonoBehaviour:
   bestScoreTextPanel: {fileID: 563968462}
   bestScoreText: {fileID: 7012097}
   playerName: 
-  currentPlayer: 
-  bestScore: 0
+  highScore: 0
+  waveNumber: 1
   enemyCount: 0
   isMenuActive: 0
 --- !u!4 &359400095

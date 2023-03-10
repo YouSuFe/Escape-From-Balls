@@ -26,24 +26,24 @@ public class SaveManager : MonoBehaviour
     [System.Serializable]
     class Save
     {
-        public int bestScore;
+        public int highScore;
         public string name;
     }
 
     public void SaveData(int bestWave)
     {
         Save saveData = new Save();
-        saveData.bestScore = bestScore;
+        saveData.highScore = bestWave;
         saveData.name = currentPlayerName;
 
         string json = JsonUtility.ToJson(saveData);
-        File.WriteAllText(Application.persistentDataPath + "/SaveFile.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/saveFile.json", json);
     }
 
     public void ResetData()
     {
         Save saveData = new Save();
-        saveData.bestScore = 0;
+        saveData.highScore = 0;
         saveData.name = "";
 
         string json = JsonUtility.ToJson(saveData);
@@ -58,7 +58,7 @@ public class SaveManager : MonoBehaviour
             string json = File.ReadAllText(path);
             Save saveData = JsonUtility.FromJson<Save>(json);
 
-            bestScore = saveData.bestScore;
+            bestScore = saveData.highScore;
             playerName = saveData.name;
         }
     }

@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
             // Check if player has power up then start coroutine again
             if (powerUpCoroutine != null)
             {
-                StopCoroutine(PowerUpCountDownRoutine());
+                StopCoroutine(powerUpCoroutine);
             }
             powerUpCoroutine = StartCoroutine(PowerUpCountDownRoutine());
         }

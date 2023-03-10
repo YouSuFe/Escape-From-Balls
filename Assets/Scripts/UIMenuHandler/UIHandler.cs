@@ -34,7 +34,7 @@ public class UIHandler : MonoBehaviour
 
     void UpdateMenuText()
     {
-        if (SaveManager.Instance.bestScore != 0)
+        if (SaveManager.Instance.name != "")
         {
             playerName = SaveManager.Instance.playerName;
             score = SaveManager.Instance.bestScore;
@@ -48,9 +48,17 @@ public class UIHandler : MonoBehaviour
 
     public void StartGame()
     {
-        SaveManager.Instance.playerName = playerName;
-        SaveManager.Instance.currentPlayerName = currentPlayer;
-        SceneManager.LoadScene(1);
+        if(currentPlayer != "")
+        {
+            SaveManager.Instance.playerName = playerName;
+            SaveManager.Instance.currentPlayerName = currentPlayer;
+            SceneManager.LoadScene(1);
+        }
+        else
+        {
+            Debug.Log("Please Enter a Player Name!");
+        }
+        
     }
 
     public void ResetScore()
@@ -59,7 +67,7 @@ public class UIHandler : MonoBehaviour
         {
             SaveManager.Instance.ResetData();
             SaveManager.Instance.LoadData();
-            bestScoreText.text = "Best Score Reseted!";
+            bestScoreText.text = "Best Score is Reseted!";
         }
     }
 
