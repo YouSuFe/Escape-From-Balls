@@ -291,11 +291,11 @@ RectTransform:
   m_Father: {fileID: 1498501364}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -70, y: 255}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -98, y: -98}
   m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &75384966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,6 +775,7 @@ MonoBehaviour:
   powerUpPrefab: {fileID: 1278302068420586437, guid: d19c2ea7c09bc444da2961ccfa3cc021, type: 3}
   pauseMenu: {fileID: 1825062745}
   gameOverMenu: {fileID: 1394187395}
+  functionalText: {fileID: 1498501363}
   bestScoreTextPanel: {fileID: 563968462}
   bestScoreText: {fileID: 7012097}
   numberOfStopChange: {fileID: 703236297}

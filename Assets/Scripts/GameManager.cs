@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject powerUpPrefab;
     public GameObject pauseMenu;
     public GameObject gameOverMenu;
+    public GameObject functionalText;
     public TextMeshProUGUI bestScoreTextPanel;
     public TextMeshProUGUI bestScoreText;
     public TextMeshProUGUI numberOfStopChange;
@@ -102,6 +103,7 @@ public class GameManager : MonoBehaviour
             isMenuActive = true;
             pauseMenu.SetActive(true);
             bestScoreText.gameObject.SetActive(false);
+            functionalText.SetActive(false);
             Time.timeScale = 0;
         }
         else if ((Input.GetKeyDown(KeyCode.Escape) && isMenuActive == true) || isMenuClicked == true)
@@ -110,6 +112,7 @@ public class GameManager : MonoBehaviour
             isMenuClicked = false;
             pauseMenu.SetActive(false);
             bestScoreText.gameObject.SetActive(true);
+            functionalText.SetActive(true);
             Time.timeScale = 1;
         }
     }
@@ -165,6 +168,7 @@ public class GameManager : MonoBehaviour
     {
         playerCont.isGameOver = true;
         bestScoreText.gameObject.SetActive(false);
+        functionalText.SetActive(false);
         gameOverMenu.SetActive(true);
         CheckIfBestScore();
     }
